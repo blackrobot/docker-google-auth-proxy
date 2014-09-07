@@ -10,6 +10,6 @@ RUN go get github.com/bitly/google_auth_proxy
 ADD run /scripts/run
 RUN chmod +x /scripts/run
 
-EXPOSE 80
+EXPOSE 4180
 
 ENTRYPOINT ["/scripts/run"]

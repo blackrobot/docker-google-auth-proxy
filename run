@@ -1,5 +1,6 @@
 #!/bin/bash
 
-/go/bin/google_auth_proxy \
-  --upstream=$(env | grep UPSTREAM_PORT_.*_TCP= | sed 's:.*//\(.*$\):http\://\1/:g') \
-  $@
+export google_auth_cookie_secret=${google_auth_cookie_secret:-$(</dev/urandom tr -dc '[:alnum:]' | head -c 16)}
+UPSTREAM_URL=$(env | grep UPSTREAM_PORT_.*_TCP= | sed 's:.*//\(.*$\):http\://\1/:g')
+
+/go/bin/google_auth_proxy --upstream="${UPSTREAM_URL}" $@
