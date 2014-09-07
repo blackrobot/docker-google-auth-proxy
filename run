@@ -1,3 +1,5 @@
 #!/bin/bash
 
-/go/bin/google_auth_proxy --upstream=${UPSTREAM/tcp/http}/ $@
+/go/bin/google_auth_proxy \
+  --upstream=$(env | grep UPSTREAM_PORT_.*_TCP= | sed 's:.*//\(.*$\):http\://\1/:g') \
+  $@
