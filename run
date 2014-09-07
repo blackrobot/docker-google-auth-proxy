@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/go/bin/google_auth_proxy --upstream=${UPSTREAM/tcp/http}/ $@
