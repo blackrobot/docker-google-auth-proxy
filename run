@@ -1,6 +1,27 @@
 #!/bin/bash
 
-export google_auth_cookie_secret=${google_auth_cookie_secret:-$(</dev/urandom tr -dc '[:alnum:]' | head -c 16)}
-UPSTREAM_URL=$(env | grep UPSTREAM_PORT_.*_TCP= | sed 's:.*//\(.*$\):http\://\1/:g')
+set -e
 
-/go/bin/google_auth_proxy --upstream="${UPSTREAM_URL}" $@
+check_val() {
+  if [[ -z "${1}" ]]; then
+    echo "${2}"
+    exit 1
+  fi
+}
+
+check_val $(env | grep UPSTREAM_PORT_.*_TCP=) "Please link the upstream container as 'upstream'"
+check_val "${google_auth_cookie_secret}" "Missing 'google_auth_cookie_secret' env var"
+check_val "${google_auth_client_id}" "Missing 'google_auth_client_id' env var"
+check_val "${google_auth_secret}" "Missing 'google_auth_secret' env var"
+check_val "${google_apps_domain}" "Missing 'google_apps_domain' env var"
+check_val "${redirect_url}" "Missing 'redirect_url' env var"
+
+UPSTREAM_URL=$(env | grep UPSTREAM_PORT_.*_TCP= | sed 's:.*//\(.*$\):http\://\1/:g')
+echo -e "UPSTREAM_URL = ${UPSTREAM_URL}\n"
+
+set -x ;
+
+/go/bin/google_auth_proxy \
+  --redirect-url="${redirect_url}" \
+  --google-apps-domain="${google_apps_domain}" \
+  --upstream="${UPSTREAM_URL}"
