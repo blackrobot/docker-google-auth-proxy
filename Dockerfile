@@ -12,4 +12,4 @@ RUN chmod +x /scripts/run
 
 EXPOSE 4180
 
-ENTRYPOINT ["/scripts/run"]
+ENTRYPOINT ["/go/bin/google_auth_proxy"]
